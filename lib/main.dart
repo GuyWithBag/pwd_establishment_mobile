@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // TODO: Replace with your actual Supabase credentials
@@ -91,6 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _isSignUp = false;
   bool _obscurePassword = true;
+  bool _googleInitialized = false;
 
   @override
   void dispose() {
@@ -126,14 +128,40 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
     try {
-      await supabase.auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: 'io.supabase.pwdestablishment://login-callback/',
+      // TODO: Replace with your Web client ID from Google Cloud Console
+      const webClientId =
+          '950844363262-l1kq2di030bsep52oivmn00pd88s7lh0.apps.googleusercontent.com';
+
+      final googleSignIn = GoogleSignIn.instance;
+
+      if (!_googleInitialized) {
+        await googleSignIn.initialize(serverClientId: webClientId);
+        _googleInitialized = true;
+      }
+
+      final googleUser = await googleSignIn.authenticate();
+
+      final scopes = ['email', 'profile'];
+      final authorization =
+          await googleUser.authorizationClient.authorizationForScopes(scopes) ??
+              await googleUser.authorizationClient.authorizeScopes(scopes);
+
+      final idToken = googleUser.authentication.idToken;
+
+      if (idToken == null) {
+        _showError('Could not retrieve Google ID token.');
+        return;
+      }
+
+      await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: authorization.accessToken,
       );
     } on AuthException catch (e) {
       _showError(e.message);
     } catch (e) {
-      _showError('An unexpected error occurred.');
+      _showError('Google sign-in failed: $e');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
