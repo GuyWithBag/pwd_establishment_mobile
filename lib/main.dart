@@ -1,9 +1,10 @@
+// Loejee Miguel Dulaugon
+
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/home_screen.dart';
 
-// TODO: Replace with your actual Supabase credentials
 const supabaseUrl = 'https://cezlhwkycrppeavntpqg.supabase.co';
 const supabaseAnonKey = 'sb_publishable_3rQqHGGm0rQkh8icOOIJGw_PVlaBVRE';
 
@@ -514,4 +515,3 @@ class _SocialButton extends StatelessWidget {
     );
   }
 }
-

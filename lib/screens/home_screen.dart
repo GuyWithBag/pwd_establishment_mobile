@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../main.dart';
 import 'dashboard_screen.dart';
+import 'map_screen.dart';
 import 'account_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,8 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final _screens = const [
     DashboardScreen(),
-    // Map placeholder
-    _MapPlaceholder(),
+    MapScreen(),
     AccountScreen(),
   ];
 
@@ -102,32 +102,3 @@ class _NavItem extends StatelessWidget {
   }
 }
 
-class _MapPlaceholder extends StatelessWidget {
-  const _MapPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.map_outlined, size: 64, color: AppColors.slate400),
-          SizedBox(height: 16),
-          Text(
-            'Map View',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: AppColors.slate500,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Coming soon',
-            style: TextStyle(fontSize: 14, color: AppColors.slate400),
-          ),
-        ],
-      ),
-    );
-  }
-}
